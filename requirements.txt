@@ -1,0 +1,7 @@
+mypy==1.18.2
+mypy_extensions==1.1.0
+pathspec==0.12.1
+ruff==0.13.1
+shellcheck_py==0.11.0.1
+shfmt_py==3.12.0.2
+typing_extensions==4.15.0
