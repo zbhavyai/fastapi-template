@@ -1,9 +1,9 @@
 VENV_DIR := .venv/PY-VENV
 REQUIREMENTS_FILE := requirements.txt
 
-.PHONY: init dev format lint help
+.PHONY: prep dev format lint help
 
-init: $(REQUIREMENTS_FILE)
+prep: $(REQUIREMENTS_FILE)
 	@ln -sf $(CURDIR)/.hooks/pre-commit.sh .git/hooks/pre-commit
 	@if [ ! -d "$(VENV_DIR)" ]; then \
 		python3 -m venv $(VENV_DIR); \
@@ -24,7 +24,7 @@ lint:
 
 help:
 	@echo "Available targets:"
-	@echo "  init          - Set up py venv and install requirements"
+	@echo "  prep          - Set up py venv and install requirements"
 	@echo "  dev           - Start app in development mode"
 	@echo "  lint          - Run lint on all python files"
 	@echo "  format        - Run format on all python files"
