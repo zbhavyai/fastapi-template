@@ -1,4 +1,5 @@
 import logging
+import os
 import tomllib
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -13,6 +14,11 @@ def configure_logging(log_level: str, log_file: str) -> None:
     handlers: list[logging.Handler] = [logging.StreamHandler()]
 
     if log_file:
+        log_file = os.path.expandvars(log_file)
+        log_file = str(Path(log_file).expanduser())
+
+        Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+
         file_handler = RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=7)
         handlers.append(file_handler)
 
@@ -40,7 +46,7 @@ metadata = get_project_metadata()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    configure_logging(log_level="INFO", log_file=".fastapitemplate/app.log")
+    configure_logging(log_level="INFO", log_file="${HOME}/.fastapitemplate/app.log")
     logging.info("--------------------------------------------------------------------------------")
     logging.info("Starting application")
     logging.info("--------------------------------------------------------------------------------")
