@@ -35,12 +35,12 @@ jobs:
 
       - name: Run ruff format
         run: |
-          ruff format --check --force-exclude -- src
+          ruff format --check --force-exclude -- app
 
       - name: Run ruff lint
         run: |
-          ruff check --force-exclude -- src
+          ruff check --force-exclude -- app
 
       - name: Run mypy typecheck
         run: |
-          mypy --pretty -- src
+          mypy --pretty -- app
