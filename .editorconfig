@@ -9,7 +9,7 @@ trim_trailing_whitespace = true
 
 [*.py]
 indent_size = 4
-max_line_length = 200
+max_line_length = 100
 
 [*.sql]
 indent_size = 4
