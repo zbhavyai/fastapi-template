@@ -11,7 +11,7 @@ prep: $(REQUIREMENTS_FILE)
 	@. $(VENV_DIR)/bin/activate && pip install --upgrade pip && pip install -r $(REQUIREMENTS_FILE)
 
 dev:
-	@. $(VENV_DIR)/bin/activate && fastapi dev app/main.py
+	@. $(VENV_DIR)/bin/activate && fastapi dev app/main.py --host 0.0.0.0 --port 8080
 
 format:
 	@. $(VENV_DIR)/bin/activate && \
@@ -23,7 +23,7 @@ lint:
 	mypy --pretty -- app
 
 run:
-	@. $(VENV_DIR)/bin/activate && fastapi run app/main.py
+	@. $(VENV_DIR)/bin/activate && fastapi run app/main.py --host 0.0.0.0 --port 8080
 
 help:
 	@echo "Available targets:"

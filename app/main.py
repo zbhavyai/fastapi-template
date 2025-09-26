@@ -8,23 +8,29 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from app.core.settings import settings
 
-def configure_logging(log_level: str, log_file: str) -> None:
-    level = getattr(logging, log_level, logging.INFO)
+
+def configure_logging() -> None:
+    level = getattr(logging, settings.log_level.upper())
     handlers: list[logging.Handler] = [logging.StreamHandler()]
 
-    if log_file:
-        log_file = os.path.expandvars(log_file)
+    if settings.log_file:
+        log_file = os.path.expandvars(str(settings.log_file))
         log_file = str(Path(log_file).expanduser())
 
         Path(log_file).parent.mkdir(parents=True, exist_ok=True)
 
-        file_handler = RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=7)
+        file_handler = RotatingFileHandler(
+            log_file,
+            maxBytes=settings.log_file_max_size,
+            backupCount=settings.log_file_backup_count,
+        )
         handlers.append(file_handler)
 
     logging.basicConfig(
         level=level,
-        format="%(asctime)s [%(levelname)7s] (%(lineno)4d) %(funcName)s: %(message)s",
+        format=settings.log_format,
         handlers=handlers,
     )
 
@@ -46,7 +52,7 @@ metadata = get_project_metadata()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    configure_logging(log_level="INFO", log_file="${HOME}/.fastapitemplate/app.log")
+    configure_logging()
     logging.info("--------------------------------------------------------------------------------")
     logging.info("Starting application")
     logging.info("--------------------------------------------------------------------------------")
@@ -62,6 +68,6 @@ app = FastAPI(
     title=metadata["title"],
     description=metadata["description"],
     version=metadata["version"],
-    root_path="/api",
+    root_path=settings.root_path,
     lifespan=lifespan,
 )
