@@ -14,11 +14,12 @@ class Settings(BaseSettings):
     log_format: str = "%(asctime)s [%(levelname)7s] (%(lineno)4d) %(funcName)s: %(message)s"
 
     # -------------------------------------------------------------------------
-    # HTTP
+    # HTTP and CORS
     # -------------------------------------------------------------------------
     app_host: str = "0.0.0.0"
     app_port: int = 8080
     root_path: str = "/api"
+    cors_origins: list[str] = ["*"]
 
     class Config:
         env_file = ".env"
