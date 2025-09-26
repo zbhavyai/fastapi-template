@@ -9,6 +9,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from app.api.main import api_router
 from app.core.settings import settings
 
 
@@ -81,3 +82,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(router=api_router)
