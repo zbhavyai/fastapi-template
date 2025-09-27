@@ -30,16 +30,10 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Pick up release artifacts
-        run: |
-          FILES=$(ls dist/*.{whl,tar.gz} 2>/dev/null || true)
-          echo "RELEASE_FILES=$FILES" >> ${GITHUB_ENV}
-
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CURRENT_TAG: ${{ github.ref_name }}
-          RELEASE_FILES: ${{ env.RELEASE_FILES }}
         run: |
           LATEST_TAG=$(git tag -l "v*" | sort -V | tail -n 1)
 
@@ -52,10 +46,11 @@ jobs:
           if gh release view "${CURRENT_TAG}" >/dev/null 2>&1; then
             echo "Release for ${CURRENT_TAG} already exists. Skipping creation."
           else
+            RELEASE_FILES=(dist/*)
             echo "Attaching artifact: ${RELEASE_FILES}"
             gh release create "${CURRENT_TAG}" \
               --title "${CURRENT_TAG}" \
               --generate-notes \
               ${LATEST_FLAG} \
-              "${RELEASE_FILES}"
+              "${RELEASE_FILES[@]}"
           fi
