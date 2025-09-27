@@ -18,9 +18,18 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0
+
+      - name: Set version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${GITHUB_SHA::7}"
+          fi
+          echo "REVISION=${VERSION}" >> ${GITHUB_ENV}
 
       - name: Set up python
         uses: actions/setup-python@v6
@@ -44,3 +53,43 @@ jobs:
       - name: Run mypy typecheck
         run: |
           mypy --pretty -- app
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${GITHUB_SHA::7}"
+          fi
+          echo "REVISION=${VERSION}" >> ${GITHUB_ENV}
+
+      - name: Set up python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --requirement requirements.txt
+
+      - name: Run tests
+        run: python -m pytest --verbose --junit-xml=tests/coverage.xml
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ env.REVISION }}
+          path: tests/coverage.xml
+          retention-days: 7
+          if-no-files-found: ignore
