@@ -3,7 +3,7 @@ REVISION := $(shell git rev-parse --short HEAD)
 VENV_DIR := .venv/PY-VENV
 REQUIREMENTS_FILE := requirements.txt
 
-.PHONY: prep test dev format lint run container-build container-run container-stop container-logs container-destroy help
+.PHONY: prep test dev format lint build run container-build container-run container-stop container-logs container-destroy help
 
 define CHECK_DEPENDENCY
 	@for cmd in $(1); do \
@@ -39,6 +39,9 @@ lint:
 	ruff check --force-exclude -- app && \
 	mypy --pretty -- app
 
+build:
+	@. $(VENV_DIR)/bin/activate && python -m build --outdir dist
+
 run:
 	@. $(VENV_DIR)/bin/activate && fastapi run app/main.py --host 0.0.0.0 --port 8080
 
@@ -62,8 +65,9 @@ help:
 	@echo "  prep              - Set up py venv and install requirements"
 	@echo "  test              - Run tests"
 	@echo "  dev               - Start app in development mode"
-	@echo "  lint              - Run lint on all python files"
 	@echo "  format            - Run format on all python files"
+	@echo "  lint              - Run lint on all python files"
+	@echo "  build             - Build the app package"
 	@echo "  run               - Run the app"
 	@echo "  container-build   - Build app in containers and create container image"
 	@echo "  container-run     - Run app container"
