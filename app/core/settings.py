@@ -18,7 +18,6 @@ class Settings(BaseSettings):
     # -------------------------------------------------------------------------
     app_host: str = "0.0.0.0"
     app_port: int = 8080
-    root_path: str = "/api"
     cors_origins: list[str] = ["*"]
 
     model_config = {

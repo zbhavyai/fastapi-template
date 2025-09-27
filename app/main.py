@@ -70,7 +70,6 @@ app = FastAPI(
     title=metadata["title"],
     description=metadata["description"],
     version=metadata["version"],
-    root_path=settings.root_path,
     lifespan=lifespan,
 )
 
@@ -83,4 +82,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router=api_router)
+app.include_router(router=api_router, prefix="/api")
