@@ -50,20 +50,21 @@ def get_project_metadata() -> dict[str, str]:
 
 
 metadata = get_project_metadata()
+configure_logging()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    configure_logging()
-    logging.info("--------------------------------------------------------------------------------")
-    logging.info("Starting application")
-    logging.info("--------------------------------------------------------------------------------")
+    logger = logging.getLogger("app.main")
+    logger.info("--------------------------------------------------------------------------------")
+    logger.info("Starting application")
+    logger.info("--------------------------------------------------------------------------------")
 
     yield
 
-    logging.info("--------------------------------------------------------------------------------")
-    logging.info("Shutting down application")
-    logging.info("--------------------------------------------------------------------------------")
+    logger.info("--------------------------------------------------------------------------------")
+    logger.info("Shutting down application")
+    logger.info("--------------------------------------------------------------------------------")
 
 
 app = FastAPI(
@@ -72,7 +73,6 @@ app = FastAPI(
     version=metadata["version"],
     lifespan=lifespan,
 )
-
 
 app.add_middleware(
     CORSMiddleware,
