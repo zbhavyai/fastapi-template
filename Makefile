@@ -3,7 +3,7 @@ REVISION := $(shell git rev-parse --short HEAD)
 VENV_DIR := .venv/PY-VENV
 REQUIREMENTS_FILE := requirements.txt
 
-.PHONY: prep dev format lint run container-build container-run container-stop container-logs container-destroy help
+.PHONY: prep test dev format lint run container-build container-run container-stop container-logs container-destroy help
 
 define CHECK_DEPENDENCY
 	@for cmd in $(1); do \
@@ -23,6 +23,9 @@ prep: $(REQUIREMENTS_FILE)
 		python3 -m venv $(VENV_DIR); \
 	fi
 	@. $(VENV_DIR)/bin/activate && pip install --upgrade pip && pip install -r $(REQUIREMENTS_FILE)
+
+test:
+	@. $(VENV_DIR)/bin/activate && python -m pytest --verbose --junit-xml=tests/coverage.xml
 
 dev:
 	@. $(VENV_DIR)/bin/activate && fastapi dev app/main.py --host 0.0.0.0 --port 8080
@@ -57,6 +60,7 @@ container-destroy: .deps-container
 help:
 	@echo "Available targets:"
 	@echo "  prep              - Set up py venv and install requirements"
+	@echo "  test              - Run tests"
 	@echo "  dev               - Start app in development mode"
 	@echo "  lint              - Run lint on all python files"
 	@echo "  format            - Run format on all python files"
