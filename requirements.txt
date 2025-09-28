@@ -38,6 +38,7 @@ rignore==0.6.4
 ruff==0.13.1
 sentry-sdk==2.39.0
 setuptools==80.9.0
+setuptools-scm==9.2.0
 shellcheck_py==0.11.0.1
 shellingham==1.5.4
 shfmt_py==3.12.0.2
