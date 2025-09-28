@@ -69,7 +69,7 @@ jobs:
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF_NAME#v}"
           else
-            VERSION="${GITHUB_SHA::7}"
+            VERSION="0.0.0+${GITHUB_SHA::7}"
           fi
           echo "REVISION=${VERSION}" >> ${GITHUB_ENV}
 
@@ -110,7 +110,7 @@ jobs:
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF_NAME#v}"
           else
-            VERSION="${GITHUB_SHA::7}"
+            VERSION="0.0.0+${GITHUB_SHA::7}"
           fi
           echo "REVISION=${VERSION}" >> ${GITHUB_ENV}
 
@@ -126,7 +126,7 @@ jobs:
           pip install --requirement requirements.txt
 
       - name: Run build
-        run: python -m build --outdir dist
+        run: SETUPTOOLS_SCM_PRETEND_VERSION=${REVISION} python -m build --outdir dist
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

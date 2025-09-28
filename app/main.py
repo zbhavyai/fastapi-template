@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+import setuptools_scm
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
@@ -38,6 +39,8 @@ def configure_logging() -> None:
 
 
 def get_project_metadata() -> dict[str, str]:
+    pkg_version = setuptools_scm.get_version(root="..", relative_to=__file__)
+
     pyproject_path = Path(__file__).resolve().parents[1] / "pyproject.toml"
     with pyproject_path.open("rb") as f:
         pyproject = tomllib.load(f)
@@ -45,7 +48,7 @@ def get_project_metadata() -> dict[str, str]:
     return {
         "title": project.get("name", ""),
         "description": project.get("description", ""),
-        "version": project.get("version", "1.0.0"),
+        "version": pkg_version,
     }
 
 
