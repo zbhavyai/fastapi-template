@@ -5,6 +5,8 @@ services:
     image: postgres:17.0
     container_name: fastapitemplate_db
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: appsecret
       POSTGRES_USER: appuser
