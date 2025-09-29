@@ -20,6 +20,13 @@ class Settings(BaseSettings):
     app_port: int = 8080
     cors_origins: list[str] = ["*"]
 
+    # -------------------------------------------------------------------------
+    # DATABASE
+    # -------------------------------------------------------------------------
+    database_url: str = "postgresql+asyncpg://appuser:appsecret@127.0.0.1:5432/appdb"
+    database_pool_pre_ping: bool = True
+    database_echo: bool = False
+
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
