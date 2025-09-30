@@ -31,6 +31,8 @@ services:
     image: fastapitemplate_backend:${REVISION}
     container_name: fastapitemplate_backend
     restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://appuser:appsecret@db:5432/appdb
     ports:
       - "8080:8080"
     healthcheck:
