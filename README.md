@@ -9,6 +9,10 @@ A **starter template** for building backend applications with [FastAPI](https://
 ## :sparkles: Tech Stack and Features
 
 -  :zap: [FastAPI](http://fastapi.tiangolo.com/), the high-performance Python web framework
+-  :jigsaw: [Pydantic](https://docs.pydantic.dev/) for data validation and settings management
+-  :gear: [SQLAlchemy](https://www.sqlalchemy.org/) and [asyncpg](https://github.com/MagicStack/asyncpg) for non-blocking database access
+-  :elephant: [PostgreSQL](https://www.postgresql.org/) as the production-ready relational database
+-  :luggage: [Alembic](https://alembic.sqlalchemy.org/) for version-controlled database migrations
 -  :open_file_folder: Defined project structure with ready-to-use [`pyproject.toml`](pyproject.toml) and [pydantic settings](app/core/settings.py)
 -  :pen: [VS Code](https://code.visualstudio.com/) settings included
 -  :art: [Ruff](https://docs.astral.sh/ruff/) for consistent code formatting and linting
