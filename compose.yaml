@@ -1,6 +1,27 @@
 name: fastapitemplate
 
 services:
+  db:
+    image: postgres:17.0
+    container_name: fastapitemplate_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: appsecret
+      POSTGRES_USER: appuser
+      POSTGRES_DB: appdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - net
+
   backend:
     build:
       context: .
@@ -10,6 +31,8 @@ services:
     image: fastapitemplate_backend:${REVISION}
     container_name: fastapitemplate_backend
     restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://appuser:appsecret@db:5432/appdb
     ports:
       - "8080:8080"
     healthcheck:
@@ -20,6 +43,12 @@ services:
       start_period: 15s
     networks:
       - net
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
 
 networks:
   net:

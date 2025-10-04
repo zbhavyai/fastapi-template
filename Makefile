@@ -28,7 +28,9 @@ test:
 	@. $(VENV_DIR)/bin/activate && python -m pytest --verbose --junit-xml=tests/coverage.xml
 
 dev:
-	@. $(VENV_DIR)/bin/activate && SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) fastapi dev app/main.py --host 0.0.0.0 --port 8080
+	@. $(VENV_DIR)/bin/activate && \
+	alembic upgrade head && \
+	SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) fastapi dev app/main.py --host 0.0.0.0 --port 8080
 
 format:
 	@. $(VENV_DIR)/bin/activate && \
@@ -40,10 +42,13 @@ lint:
 	mypy --pretty -- app
 
 build:
-	@. $(VENV_DIR)/bin/activate && SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) python -m build --outdir dist
+	@. $(VENV_DIR)/bin/activate && \
+	SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) python -m build --outdir dist
 
 run:
-	@. $(VENV_DIR)/bin/activate && SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) fastapi run app/main.py --host 0.0.0.0 --port 8080
+	@. $(VENV_DIR)/bin/activate && \
+	alembic upgrade head && \
+	SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) fastapi run app/main.py --host 0.0.0.0 --port 8080
 
 container-build: .deps-container
 	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose build

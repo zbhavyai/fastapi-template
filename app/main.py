@@ -57,7 +57,7 @@ configure_logging()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     logger = logging.getLogger("app.main")
     logger.info("--------------------------------------------------------------------------------")
     logger.info("Starting application")
