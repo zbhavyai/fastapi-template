@@ -1,8 +1,11 @@
+import asyncio
 import uuid
 from collections.abc import AsyncGenerator, Generator
 
 import pytest
 import pytest_asyncio
+from alembic import command
+from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
@@ -13,14 +16,20 @@ from sqlalchemy.ext.asyncio import (
 )
 from testcontainers.postgres import PostgresContainer
 
-from app.core.db import Base, get_db
+from app.core.db import get_db
+from app.core.settings import settings
 from app.main import app
 from app.models.note_model import Note
 
 
 @pytest.fixture(scope="session")
 def postgres_container() -> Generator[PostgresContainer]:
-    container = PostgresContainer("docker.io/library/postgres:17.0")
+    container = PostgresContainer(
+        "docker.io/library/postgres:17.0",
+        username="appuser",
+        password="apppass",
+        dbname="appdb",
+    )
     container.start()
     yield container
     container.stop()
@@ -35,13 +44,16 @@ async def db_engine(postgres_container: PostgresContainer) -> AsyncGenerator[Asy
         f"{postgres_container.get_exposed_port(postgres_container.port)}/"
         f"{postgres_container.dbname}"
     )
-    print("DB URL:", url)
+    settings.database_url = url
+    print("Test database URL:", url)
+    engine: AsyncEngine = create_async_engine(url, future=True, echo=False)
 
-    engine = create_async_engine(url, future=True, echo=False)
+    def run_migrations() -> None:
+        alembic_cfg = Config("alembic.ini")
+        alembic_cfg.set_main_option("sqlalchemy.url", url)
+        command.upgrade(alembic_cfg, "head")
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+    await asyncio.to_thread(run_migrations)
 
     yield engine
     await engine.dispose()
