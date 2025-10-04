@@ -1,14 +1,22 @@
+from collections.abc import AsyncGenerator
+
 import pytest
+import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 
 
-@pytest.mark.asyncio
-async def test_note_listing() -> None:
+@pytest_asyncio.fixture
+async def client() -> AsyncGenerator[AsyncClient]:
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get("/api/v1/note")
+    async with AsyncClient(transport=transport, base_url="http://test") as c:
+        yield c
+
+
+@pytest.mark.asyncio
+async def test_note_listing(client: AsyncClient) -> None:
+    response = await client.get("/api/v1/note")
 
     assert response.status_code == 200
     data = response.json()
@@ -20,10 +28,8 @@ async def test_note_listing() -> None:
 
 
 @pytest.mark.asyncio
-async def test_note_get_by_id() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get("/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a")
+async def test_note_get_by_id(client: AsyncClient) -> None:
+    response = await client.get("/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a")
 
     assert response.status_code == 200
     data = response.json()
@@ -32,13 +38,11 @@ async def test_note_get_by_id() -> None:
 
 
 @pytest.mark.asyncio
-async def test_note_creation() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post(
-            "/api/v1/note",
-            json={"title": "Test note title", "content": "Test note description"},
-        )
+async def test_note_creation(client: AsyncClient) -> None:
+    response = await client.post(
+        "/api/v1/note",
+        json={"title": "Test note title", "content": "Test note description"},
+    )
 
     assert response.status_code == 201
     data = response.json()
@@ -48,25 +52,21 @@ async def test_note_creation() -> None:
 
 
 @pytest.mark.asyncio
-async def test_note_creation_with_null_title() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post(
-            "/api/v1/note",
-            json={"title": None, "content": "Test note description"},
-        )
+async def test_note_creation_with_null_title(client: AsyncClient) -> None:
+    response = await client.post(
+        "/api/v1/note",
+        json={"title": None, "content": "Test note description"},
+    )
 
     assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def test_note_update_title() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.patch(
-            "/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a",
-            json={"title": "Test updated title"},
-        )
+async def test_note_update_title(client: AsyncClient) -> None:
+    response = await client.patch(
+        "/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a",
+        json={"title": "Test updated title"},
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -74,13 +74,11 @@ async def test_note_update_title() -> None:
 
 
 @pytest.mark.asyncio
-async def test_note_update_content() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.patch(
-            "/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a",
-            json={"content": "Test updated content"},
-        )
+async def test_note_update_content(client: AsyncClient) -> None:
+    response = await client.patch(
+        "/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a",
+        json={"content": "Test updated content"},
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -88,34 +86,28 @@ async def test_note_update_content() -> None:
 
 
 @pytest.mark.asyncio
-async def test_note_update_does_not_exist() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.patch(
-            "/api/v1/note/8aba169f-f901-4d71-94e2-1251690aa0c9",
-            json={"title": "Does not matter"},
-        )
+async def test_note_update_does_not_exist(client: AsyncClient) -> None:
+    response = await client.patch(
+        "/api/v1/note/8aba169f-f901-4d71-94e2-1251690aa0c9",
+        json={"title": "Does not matter"},
+    )
 
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
-async def test_note_deletion() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.delete(
-            "/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a",
-        )
+async def test_note_deletion(client: AsyncClient) -> None:
+    response = await client.delete(
+        "/api/v1/note/1d7539f9-e9b7-4a06-9e6c-d5d6cf74d87a",
+    )
 
     assert response.status_code == 204
 
 
 @pytest.mark.asyncio
-async def test_note_deletion_does_not_exist() -> None:
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.delete(
-            "/api/v1/note/8aba169f-f901-4d71-94e2-1251690aa0c9",
-        )
+async def test_note_deletion_does_not_exist(client: AsyncClient) -> None:
+    response = await client.delete(
+        "/api/v1/note/8aba169f-f901-4d71-94e2-1251690aa0c9",
+    )
 
     assert response.status_code == 404
