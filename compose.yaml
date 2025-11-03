@@ -2,7 +2,7 @@ name: fastapitemplate
 
 services:
   db:
-    image: postgres:17.0
+    image: docker.io/library/postgres:17.0
     container_name: fastapitemplate_db
     restart: unless-stopped
     ports:
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       args:
         REVISION: "${REVISION}"
-    image: fastapitemplate_backend:${REVISION}
+    image: localhost/fastapitemplate_backend:${REVISION}
     container_name: fastapitemplate_backend
     restart: unless-stopped
     environment:
