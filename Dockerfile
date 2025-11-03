@@ -1,3 +1,10 @@
+# Build Stage
+FROM docker.io/library/python:3.13-slim as build
+WORKDIR /opt/app
+COPY requirements.txt requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir --requirement requirements.txt
+
+# Runtime Stage
 FROM docker.io/library/python:3.13-slim
 ARG REVISION
 LABEL org.opencontainers.image.title="FastAPI Template"
@@ -12,8 +19,8 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+${REVISION} \
     PYTHONUNBUFFERED=1  \
     PYTHONPATH=/opt/app
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
-COPY requirements.txt requirements.txt
-RUN pip install --upgrade pip && pip install --no-cache-dir --requirement requirements.txt
+COPY --from=build /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=build /usr/local/bin /usr/local/bin
 COPY pyproject.toml pyproject.toml
 COPY app app
 COPY alembic.ini alembic.ini
