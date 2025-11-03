@@ -11,7 +11,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+${REVISION} \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1  \
     PYTHONPATH=/opt/app
-RUN apt-get update && apt-get install -y --no-install-recommends curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install --no-cache-dir --requirement requirements.txt
 COPY pyproject.toml pyproject.toml
