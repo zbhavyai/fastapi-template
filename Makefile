@@ -3,7 +3,7 @@ REVISION := $(shell git rev-parse --short HEAD)
 VENV_DIR := .venv/PY-VENV
 REQUIREMENTS_FILE := requirements.txt
 
-.PHONY: prep test dev format lint build run container-build container-run container-stop container-logs container-destroy help
+.PHONY: init test dev format lint build run container-build container-run container-stop container-logs container-destroy help
 
 define CHECK_DEPENDENCY
 	@for cmd in $(1); do \
@@ -14,10 +14,10 @@ define CHECK_DEPENDENCY
 	done
 endef
 
-.deps-container:
+.deps:
 	$(call CHECK_DEPENDENCY, $(CONTAINER_ENGINE))
 
-prep: $(REQUIREMENTS_FILE)
+init: $(REQUIREMENTS_FILE)
 	@ln -sf $(CURDIR)/.hooks/pre-commit.sh .git/hooks/pre-commit
 	@if [ ! -d "$(VENV_DIR)" ]; then \
 		python3 -m venv $(VENV_DIR); \
@@ -50,24 +50,24 @@ run:
 	alembic upgrade head && \
 	SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) fastapi run app/main.py --host 0.0.0.0 --port 8080
 
-container-build: .deps-container
+container-build: .deps
 	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose build
 
-container-run: .deps-container
+container-run: .deps
 	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose up --detach
 
-container-stop: .deps-container
+container-stop: .deps
 	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose down
 
-container-logs: .deps-container
+container-logs: .deps
 	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose logs --follow
 
-container-destroy: .deps-container
+container-destroy: .deps
 	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose down --volumes --rmi local
 
 help:
 	@echo "Available targets:"
-	@echo "  prep              - Set up py venv and install requirements"
+	@echo "  init              - Set up py venv and install requirements"
 	@echo "  test              - Run tests"
 	@echo "  dev               - Start app in development mode"
 	@echo "  format            - Run format on all python files"

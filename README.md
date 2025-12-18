@@ -27,10 +27,10 @@ A **starter template** for building backend applications with [FastAPI](https://
 
 ## :rocket: Getting started
 
--  Before you start development on this project, run the prep target. This will install a hook that would check your commit for code formatting and lint issues.
+-  Before you start development on this project, run the `init` target. This will install a pre-commit hook and install dependencies.
 
    ```shell
-   make prep
+   make init
    ```
 
 -  Run the application in dev mode that enables live coding.
