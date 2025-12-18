@@ -17,8 +17,7 @@ version_scheme = "no-guess-dev"
 local_scheme = "node-and-date"
 
 [tool.ruff]
-line-length = 100
-target-version = "py313"
+line-length = 120
 extend-exclude = ["build", "dist", ".venv", "venv", ".mypy_cache"]
 
 [tool.ruff.lint]
@@ -29,9 +28,9 @@ select = [
     "I", # isort
 ]
 extend-select = [
-    "UP", # pyupgrade
+    "UP",  # pyupgrade
     "SIM", # code simplifications
-    "C4", # comprehension checks
+    "C4",  # comprehension checks
     "RET", # return practices
     "PTH", # pathlib over os.path
 ]
@@ -45,8 +44,7 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.mypy]
-python_version = "3.13"
-no_error_summary = true
+error_summary = false
 warn_unused_ignores = true
 warn_redundant_casts = true
 strict_optional = true
@@ -61,6 +59,4 @@ where = ["app"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
-filterwarnings = [
-    "ignore::DeprecationWarning:testcontainers.*"
-]
+filterwarnings = ["ignore::DeprecationWarning:testcontainers.*"]
