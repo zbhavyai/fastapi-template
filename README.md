@@ -24,13 +24,14 @@ A **starter template** for building backend applications with [FastAPI](https://
 -  :hammer_and_wrench: [Makefile](https://www.gnu.org/software/make/) targets for format, build, run, and container tasks
 -  :vertical_traffic_light: [GitHub Actions](https://github.com/features/actions) for CI/CD
 -  :label: Artifact versioning based on Git SHA or tag, both in CI/CD and local builds
+-  :robot: [Dependabot](https://github.com/dependabot) for automated dependency updates
 
 ## :rocket: Getting started
 
--  Before you start development on this project, run the prep target. This will install a hook that would check your commit for code formatting and lint issues.
+-  Before you start development on this project, run the `init` target. This will install a pre-commit hook and install dependencies.
 
    ```shell
-   make prep
+   make init
    ```
 
 -  Run the application in dev mode that enables live coding.

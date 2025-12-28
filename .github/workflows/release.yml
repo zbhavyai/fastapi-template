@@ -3,7 +3,7 @@ name: Release
 
 on:
   push:
-    tags: [ "v*.*.*" ]
+    tags: ["v*.*.*"]
 
 jobs:
   build:
@@ -19,12 +19,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: dist-*
           path: dist
@@ -47,7 +47,7 @@ jobs:
             echo "Release for ${CURRENT_TAG} already exists. Skipping creation."
           else
             RELEASE_FILES=(dist/*)
-            echo "Attaching artifact: ${RELEASE_FILES}"
+            echo "Attaching artifacts: ${RELEASE_FILES[@]}"
             gh release create "${CURRENT_TAG}" \
               --title "${CURRENT_TAG}" \
               --generate-notes \
