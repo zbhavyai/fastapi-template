@@ -9,7 +9,14 @@ license-files = ["LICENSE"]
 dependencies = ["fastapi[standard]", "alembic", "asyncpg", "pydantic-settings"]
 
 [dependency-groups]
-dev = ["pytest", "pytest-asyncio", "testcontainers[postgresql]", "ruff", "mypy"]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "testcontainers[postgresql]",
+    "build",
+    "ruff",
+    "mypy",
+]
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]

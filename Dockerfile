@@ -25,7 +25,8 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.authors="Bhavyai Gupta <https://zbhavyai.github.io>"
 LABEL org.opencontainers.image.version="${REVISION}"
 WORKDIR /opt/app
-ENV PYTHONDONTWRITEBYTECODE=1 \
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=${REVISION} \
+    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/opt/app \
     PATH="/opt/app/.venv/bin:$PATH"
