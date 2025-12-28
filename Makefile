@@ -18,7 +18,7 @@ test:
 
 dev:
 	@uv run alembic upgrade head
-	@uv run fastapi dev app/main.py --host 0.0.0.0 --port 8080
+	@uv run uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 
 format:
 	@uv run ruff format --force-exclude -- app
@@ -32,7 +32,7 @@ build:
 
 run:
 	@uv run alembic upgrade head
-	@uv run fastapi run app/main.py --host 0.0.0.0 --port 8080
+	@uv run uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 container-build:
 	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose build
