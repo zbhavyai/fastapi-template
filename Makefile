@@ -32,7 +32,7 @@ build:
 
 run:
 	@uv run alembic upgrade head
-	@uv run uvicorn app.main:app --host 0.0.0.0 --port 8080
+	@uv run uvicorn app.main:app --host 0.0.0.0 --port 8080 --no-access-log
 
 container-build:
 	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose build
