@@ -28,7 +28,7 @@ lint:
 	@uv run mypy --pretty -- app
 
 build:
-	@uv run python -m build --outdir dist
+	@SETUPTOOLS_SCM_PRETEND_VERSION=$(VERSION)+$(BUILD_COMMIT) uv run python -m build --outdir dist
 
 run:
 	@uv run alembic upgrade head
