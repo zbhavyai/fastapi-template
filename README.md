@@ -24,6 +24,7 @@ A **starter template** for building backend applications with [FastAPI](https://
 -  :hammer_and_wrench: [Makefile](https://www.gnu.org/software/make/) targets for format, build, run, and container tasks
 -  :vertical_traffic_light: [GitHub Actions](https://github.com/features/actions) for CI/CD
 -  :label: Artifact versioning based on Git SHA or tag, both in CI/CD and local builds
+-  :robot: [Dependabot](https://github.com/dependabot) for automated dependency updates
 
 ## :rocket: Getting started
 
