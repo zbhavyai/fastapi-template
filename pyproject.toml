@@ -6,14 +6,7 @@ readme = "README.md"
 requires-python = "==3.14.*"
 license = "MIT"
 license-files = ["LICENSE"]
-dependencies = [
-    "fastapi[standard]",
-    "alembic",
-    "asyncpg",
-    "pydantic-settings",
-    "setuptools",
-    "setuptools-scm",
-]
+dependencies = ["fastapi[standard]", "alembic", "asyncpg", "pydantic-settings"]
 
 [dependency-groups]
 dev = ["pytest", "pytest-asyncio", "testcontainers[postgresql]", "ruff", "mypy"]

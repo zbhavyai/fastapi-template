@@ -2,7 +2,7 @@ name: fastapitemplate
 
 services:
   db:
-    image: docker.io/library/postgres:17.0
+    image: docker.io/library/postgres:17
     container_name: fastapitemplate_db
     restart: unless-stopped
     ports:

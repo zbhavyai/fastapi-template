@@ -1,12 +1,11 @@
 import logging
 import os
-import tomllib
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from importlib.metadata import PackageMetadata, PackageNotFoundError, metadata, version
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-import setuptools_scm
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
@@ -39,20 +38,22 @@ def configure_logging() -> None:
 
 
 def get_project_metadata() -> dict[str, str]:
-    pkg_version = setuptools_scm.get_version(root="..", relative_to=__file__)
+    try:
+        meta: PackageMetadata = metadata("fastapi-template")
+        return {
+            "title": meta["Name"],
+            "description": meta.get("Summary", ""),
+            "version": version("fastapi-template"),
+        }
+    except PackageNotFoundError:
+        return {
+            "title": "fastapi-template",
+            "description": "",
+            "version": "0.0.0",
+        }
 
-    pyproject_path = Path(__file__).resolve().parents[1] / "pyproject.toml"
-    with pyproject_path.open("rb") as f:
-        pyproject = tomllib.load(f)
-    project = pyproject.get("project", {})
-    return {
-        "title": project.get("name", ""),
-        "description": project.get("description", ""),
-        "version": pkg_version,
-    }
 
-
-metadata = get_project_metadata()
+project_metadata = get_project_metadata()
 configure_logging()
 
 
@@ -71,9 +72,9 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(
-    title=metadata["title"],
-    description=metadata["description"],
-    version=metadata["version"],
+    title=project_metadata["title"],
+    description=project_metadata["description"],
+    version=project_metadata["version"],
     lifespan=lifespan,
 )
 

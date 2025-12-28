@@ -1,5 +1,7 @@
 CONTAINER_ENGINE := $(shell if command -v podman >/dev/null 2>&1; then echo podman; else echo docker; fi)
-REVISION := $(shell git rev-parse --short HEAD)
+LAST_TAG := $(shell git describe --tags --abbrev=0 --match "v*.*.*" 2>/dev/null || echo "v0.0.0")
+VERSION := $(patsubst v%,%,$(LAST_TAG))
+BUILD_COMMIT := $(shell git rev-parse --short HEAD)
 
 .PHONY: init test dev format lint build run container-build container-run container-stop container-logs container-destroy help
 
@@ -7,12 +9,16 @@ init:
 	@ln -sf $(CURDIR)/.hooks/pre-commit.sh .git/hooks/pre-commit
 	@uv sync
 
+update:
+	@uv lock --upgrade
+	@uv sync
+
 test:
 	@uv run pytest --verbose --junit-xml=tests/coverage.xml
 
 dev:
 	@uv run alembic upgrade head
-	@SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) uv run fastapi dev app/main.py --host 0.0.0.0 --port 8080
+	@uv run fastapi dev app/main.py --host 0.0.0.0 --port 8080
 
 format:
 	@uv run ruff format --force-exclude -- app
@@ -22,26 +28,26 @@ lint:
 	@uv run mypy --pretty -- app
 
 build:
-	@SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) uv run python -m build --outdir dist
+	@uv run python -m build --outdir dist
 
 run:
 	@uv run alembic upgrade head
-	@SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+$(REVISION) uv run fastapi run app/main.py --host 0.0.0.0 --port 8080
+	@uv run fastapi run app/main.py --host 0.0.0.0 --port 8080
 
 container-build:
-	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose build
+	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose build
 
 container-run:
-	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose up --detach
+	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose up --detach
 
 container-stop:
-	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose down
+	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose down
 
 container-logs:
-	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose logs --follow
+	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose logs --follow
 
 container-destroy:
-	@REVISION=$(REVISION) $(CONTAINER_ENGINE) compose down --volumes --rmi local
+	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose down --volumes --rmi local
 
 help:
 	@echo "Available targets:"
