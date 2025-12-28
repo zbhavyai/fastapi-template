@@ -1,5 +1,9 @@
 {
-  "editor.codeActionsOnSave": { "source.organizeImports": "always", "source.addMissingImports": "always", "source.unusedImports": "always" },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always",
+    "source.addMissingImports": "always",
+    "source.unusedImports": "always"
+  },
   "editor.formatOnSave": true,
   "editor.insertSpaces": true,
   "files.eol": "\n",
@@ -8,7 +12,7 @@
   "files.trimTrailingWhitespace": true,
   "extensions.ignoreRecommendations": true,
   "python.analysis.typeCheckingMode": "strict",
-  "python.defaultInterpreterPath": "./.venv/PY-VENV/bin/python",
+  "python.defaultInterpreterPath": "./.venv/bin/python",
   "python.terminal.activateEnvironment": true,
   "[python]": { "editor.defaultFormatter": "charliermarsh.ruff" },
   "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode", "editor.tabSize": 3 },

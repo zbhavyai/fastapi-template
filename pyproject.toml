@@ -3,13 +3,23 @@ name = "fastapi-template"
 dynamic = ["version"]
 description = "A starter template for building backend applications with FastAPI, the high-performance Python web framework."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.14.*"
 license = "MIT"
 license-files = ["LICENSE"]
-dependencies = []
+dependencies = [
+    "fastapi[standard]",
+    "alembic",
+    "asyncpg",
+    "pydantic-settings",
+    "setuptools",
+    "setuptools-scm",
+]
+
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio", "testcontainers[postgresql]", "ruff", "mypy"]
 
 [build-system]
-requires = ["setuptools>=80", "setuptools-scm>=8"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
