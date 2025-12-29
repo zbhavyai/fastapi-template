@@ -35,19 +35,19 @@ run:
 	@uv run uvicorn app.main:app --host 0.0.0.0 --port 8080 --no-access-log
 
 container-build:
-	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose build
+	@REVISION=$(VERSION) $(CONTAINER_ENGINE) compose build
 
 container-run:
-	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose up --detach
+	@REVISION=$(VERSION) $(CONTAINER_ENGINE) compose up --detach
 
 container-stop:
-	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose down
+	@REVISION=$(VERSION) $(CONTAINER_ENGINE) compose down
 
 container-logs:
-	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose logs --follow
+	@REVISION=$(VERSION) $(CONTAINER_ENGINE) compose logs --follow
 
 container-destroy:
-	@REVISION=$(BUILD_COMMIT) $(CONTAINER_ENGINE) compose down --volumes --rmi local
+	@REVISION=$(VERSION) $(CONTAINER_ENGINE) compose down --volumes --rmi local
 
 help:
 	@echo "Available targets:"
