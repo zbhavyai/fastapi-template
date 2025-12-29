@@ -2,7 +2,7 @@ name: fastapitemplate
 
 services:
   db:
-    image: docker.io/library/postgres:18
+    image: docker.io/library/postgres:17
     container_name: fastapitemplate_db
     restart: unless-stopped
     ports:
@@ -14,7 +14,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -36,7 +36,15 @@ services:
     ports:
       - "8080:8080"
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "--silent", "--show-error", "http://localhost:8080/api/ping" ]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "--show-error",
+          "http://localhost:8080/api/ping",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
